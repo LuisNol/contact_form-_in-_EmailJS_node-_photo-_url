@@ -10,6 +10,9 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 
+// Configuración para servir archivos estáticos (form.js)
+app.use(express.static(path.join(__dirname)));  // Sirve archivos desde la raíz del proyecto
+
 // Configuración de Multer para manejar la carga de archivos
 const upload = multer({
   dest: 'uploads/',
@@ -44,6 +47,8 @@ app.post('/upload-image', (req, res) => {
 
     try {
       // Generar la URL de la imagen
+       // const photo_reference = http://localhost:${process.env.PORT}/uploads/${file.filename};
+      // const photo_reference = http://foto.producto.jook.lat/uploads/${file.filename};
       const photo_reference = `http://localhost:${process.env.PORT}/uploads/${file.filename}`;
 
       // Guardar la URL de la imagen en la base de datos
