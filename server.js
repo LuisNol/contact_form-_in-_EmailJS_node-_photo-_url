@@ -19,6 +19,8 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 }).single('file');
 
+
+
 // Configuración de la base de datos MySQL utilizando las variables de entorno
 const db = mysql.createConnection({
   host: process.env.DB_HOST,  // Usando la variable de entorno
@@ -48,7 +50,7 @@ app.post('/upload-image', (req, res) => {
     try {
    
      // const photo_reference = `http://localhost:${process.env.PORT}/uploads/${file.filename}`;
-     const photo_reference = `http://foto.producto.jook.lat/uploads/${file.filename}`;
+     const photo_reference = `https://foto.producto.jook.lat/uploads/${file.filename}`;
 
       // Guardar la URL de la imagen en la base de datos
       const query = 'INSERT INTO images (name, image_url) VALUES (?, ?)';
