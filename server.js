@@ -46,10 +46,9 @@ app.post('/upload-image', (req, res) => {
     if (!file) return res.status(400).json({ message: 'No se subió ningún archivo' });
 
     try {
-      // Generar la URL de la imagen
-       // const photo_reference = http://localhost:${process.env.PORT}/uploads/${file.filename};
-      // const photo_reference = http://foto.producto.jook.lat/uploads/${file.filename};
-      const photo_reference = `http://localhost:${process.env.PORT}/uploads/${file.filename}`;
+   
+     // const photo_reference = `http://localhost:${process.env.PORT}/uploads/${file.filename}`;
+     const photo_reference = `http://foto.producto.jook.lat/uploads/${file.filename}`;
 
       // Guardar la URL de la imagen en la base de datos
       const query = 'INSERT INTO images (name, image_url) VALUES (?, ?)';

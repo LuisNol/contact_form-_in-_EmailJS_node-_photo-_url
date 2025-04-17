@@ -13,11 +13,11 @@ form.addEventListener('submit', async function(event) {
   formData.append('file', file);
 
   try {
-    const upload = await fetch('http://localhost:3000/upload-image', {
+    const upload = await fetch('http://foto.producto.jook.lat/upload-image', {
       method: 'POST',
       body: formData
     });
-
+     //const upload = await fetch('http://foto.producto.jook.lat/upload-image', {
     const result = await upload.json();
 
     if (upload.ok) {
