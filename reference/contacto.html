@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Contacto</title>
+</head>
+<body>
+  <form id="form" enctype="multipart/form-data">
+    <!-- Campos del formulario -->
+    <div class="field"><label for="name">Nombre:</label><input type="text" name="name" id="name" required></div>
+    <div class="field"><label for="phone">Celular:</label><input type="text" name="phone" id="phone" required></div>
+    <div class="field"><label for="email">Correo electrónico:</label><input type="email" name="email" id="email" required></div>
+    <div class="field"><label for="product_category">Categoría del producto:</label><input type="text" name="product_category" id="product_category" required></div>
+    <div class="field"><label for="product_reference">Enlace o referencia del producto:</label><input type="text" name="product_reference" id="product_reference" required></div>
+    
+    <!-- Campo para cargar imagen -->
+    <div class="field"><label for="photo_references">Foto de referencia (Cargar imagen):</label><input type="file" name="photo_references" id="photo_references" accept="image/*" required></div>
+
+    <div class="field"><label for="quantity">Cantidad:</label><input type="text" name="quantity" id="quantity" required></div>
+    <div class="field"><label for="has_supplier">¿Tiene proveedor? (Sí/No):</label><input type="text" name="has_supplier" id="has_supplier" required></div>
+    <div class="field"><label for="city">Ciudad:</label><input type="text" name="city" id="city" required></div>
+    <div class="field"><label for="message">Mensaje adicional:</label><input type="text" name="message" id="message"></div>
+
+    <!-- Campo oculto para almacenar la URL de la imagen -->
+    <input type="hidden" name="photo_reference" id="photo_reference">
+
+    <input type="submit" id="button" value="Enviar solicitud">
+  </form>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    emailjs.init('T3fcLKKohH7OTZnop'); // Tu User ID de EmailJS
+
+    const btn = document.getElementById('button');
+    const form = document.getElementById('form');
+
+    form.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      btn.value = 'Enviando...';
+
+      const fileInput = document.getElementById('photo_references');
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const upload = await fetch('http://localhost:3000/upload-image', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await upload.json();
+
+        if (upload.ok) {
+          // Establecer la URL de la imagen como valor del campo oculto photo_reference
+          document.getElementById('photo_reference').value = result.photo_reference;
+
+          // Enviar el formulario a EmailJS
+          emailjs.sendForm('default_service', 'template_di4p7c8', form)
+            .then(() => {
+              btn.value = 'Enviar solicitud';
+              alert('¡Formulario enviado correctamente con la imagen!');
+              form.reset();
+            })
+            .catch((err) => {
+              console.error(err);
+              btn.value = 'Enviar solicitud';
+              alert('Error al enviar el formulario: ' + JSON.stringify(err));
+            });
+        } else {
+          alert('Error al subir la imagen');
+          btn.value = 'Enviar solicitud';
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error de red o servidor.');
+        btn.value = 'Enviar solicitud';
+      }
+    });
+  </script>
+</body>
+</html>
