@@ -1,3 +1,6 @@
+// Cargar las variables del archivo .env
+require('dotenv').config();
+
 const express = require('express');
 const multer = require('multer');
 const mysql = require('mysql2');
@@ -13,12 +16,12 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 }).single('file');
 
-// Configuración de la base de datos MySQL
+// Configuración de la base de datos MySQL utilizando las variables de entorno
 const db = mysql.createConnection({
-  host: '68.183.22.54',
-  user: 'root',
-  password: 'your_password', // Tu contraseña de MySQL
-  database: 'images_db', // Nombre de la base de datos
+  host: process.env.DB_HOST,  // Usando la variable de entorno
+  user: process.env.DB_USER,  // Usando la variable de entorno
+  password: process.env.DB_PASSWORD,  // Usando la variable de entorno
+  database: process.env.DB_NAME, // Usando la variable de entorno
 });
 
 db.connect((err) => {
@@ -41,7 +44,7 @@ app.post('/upload-image', (req, res) => {
 
     try {
       // Generar la URL de la imagen
-      const photo_reference = `http://localhost:3000/uploads/${file.filename}`;
+      const photo_reference = `http://localhost:${process.env.PORT}/uploads/${file.filename}`;
 
       // Guardar la URL de la imagen en la base de datos
       const query = 'INSERT INTO images (name, image_url) VALUES (?, ?)';
@@ -60,7 +63,6 @@ app.post('/upload-image', (req, res) => {
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Iniciar el servidor
-app.listen(3000, () => {
-  console.log('Servidor corriendo en http://localhost:3000');
+app.listen(process.env.PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${process.env.PORT}`);
 });
-
